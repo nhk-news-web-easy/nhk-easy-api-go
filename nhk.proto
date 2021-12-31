@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "dekiru.app/nhk";
+option go_package = "github.com/nhk-news-web-easy/nhk-easy-service-proto;nhk_easy_service_proto";
 
 service NhkService {
   rpc GetNews (NewsRequest) returns (NewsReply) {}
