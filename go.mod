@@ -1,4 +1,4 @@
-module dekiru.app/nhk
+module github.com/nhk-news-web-easy/nhk-easy-service-proto
 
 go 1.17
 
