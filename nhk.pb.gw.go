@@ -2,11 +2,11 @@
 // source: nhk.proto
 
 /*
-Package nhk_easy_service_proto is a reverse proxy.
+Package nhk is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package nhk_easy_service_proto
+package nhk
 
 import (
 	"context"

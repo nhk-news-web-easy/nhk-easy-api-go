@@ -1,4 +1,4 @@
 version: v1
-name: buf.build/nhk-news-web-easy/nhk-easy-service-proto
+name: buf.build/nhk/nhk
 deps:
   - buf.build/googleapis/googleapis
