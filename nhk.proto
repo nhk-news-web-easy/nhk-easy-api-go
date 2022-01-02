@@ -4,7 +4,7 @@ import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
 
 package nhk;
-option go_package = "github.com/nhk-news-web-easy/nhk-easy-service-proto;nhk";
+option go_package = "github.com/nhk-news-web-easy/nhk-easy-service-proto;nhk_service";
 
 service NhkService {
   rpc GetNews (NewsRequest) returns (NewsReply) {

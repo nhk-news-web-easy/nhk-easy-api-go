@@ -3,5 +3,5 @@ config_version: 3
 
 http:
   rules:
-    - selector: nhk.NhkService.GetNews
+    - selector: nhk_service.NhkService.GetNews
       get: /news

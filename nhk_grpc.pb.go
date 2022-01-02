@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: nhk.proto
 
-package nhk
+package nhk_service
 
 import (
 	context "context"
