@@ -15,7 +15,6 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
-	extNhk_easy_service_proto "github.com/nhk-news-web-easy/nhk-easy-service-proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -36,8 +35,8 @@ var (
 	filter_NhkService_GetNews_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_NhkService_GetNews_0(ctx context.Context, marshaler runtime.Marshaler, client extNhk_easy_service_proto.NhkServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq extNhk_easy_service_proto.NewsRequest
+func request_NhkService_GetNews_0(ctx context.Context, marshaler runtime.Marshaler, client NhkServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq NewsRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -52,8 +51,8 @@ func request_NhkService_GetNews_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func local_request_NhkService_GetNews_0(ctx context.Context, marshaler runtime.Marshaler, server extNhk_easy_service_proto.NhkServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq extNhk_easy_service_proto.NewsRequest
+func local_request_NhkService_GetNews_0(ctx context.Context, marshaler runtime.Marshaler, server NhkServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq NewsRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -72,7 +71,7 @@ func local_request_NhkService_GetNews_0(ctx context.Context, marshaler runtime.M
 // UnaryRPC     :call NhkServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterNhkServiceHandlerFromEndpoint instead.
-func RegisterNhkServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server extNhk_easy_service_proto.NhkServiceServer) error {
+func RegisterNhkServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server NhkServiceServer) error {
 
 	mux.Handle("GET", pattern_NhkService_GetNews_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -128,15 +127,15 @@ func RegisterNhkServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.Ser
 // RegisterNhkServiceHandler registers the http handlers for service NhkService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterNhkServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterNhkServiceHandlerClient(ctx, mux, extNhk_easy_service_proto.NewNhkServiceClient(conn))
+	return RegisterNhkServiceHandlerClient(ctx, mux, NewNhkServiceClient(conn))
 }
 
 // RegisterNhkServiceHandlerClient registers the http handlers for service NhkService
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "extNhk_easy_service_proto.NhkServiceClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "extNhk_easy_service_proto.NhkServiceClient"
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "NhkServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "NhkServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "extNhk_easy_service_proto.NhkServiceClient" to call the correct interceptors.
-func RegisterNhkServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client extNhk_easy_service_proto.NhkServiceClient) error {
+// "NhkServiceClient" to call the correct interceptors.
+func RegisterNhkServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client NhkServiceClient) error {
 
 	mux.Handle("GET", pattern_NhkService_GetNews_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())

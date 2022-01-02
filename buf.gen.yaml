@@ -12,5 +12,3 @@ plugins:
     out: .
     opt:
       - paths=source_relative
-      - grpc_api_configuration=config.yaml
-      - standalone=true
