@@ -7,7 +7,7 @@ package nhk;
 option go_package = "github.com/nhk-news-web-easy/nhk-easy-service-proto;nhk_service";
 
 service NhkService {
-  rpc GetNews (NewsRequest) returns (NewsReply) {
+  rpc GetNews (NewsRequest) returns (stream News) {
     option (google.api.http) = {
       get: "/news"
     };
@@ -17,16 +17,6 @@ service NhkService {
 message NewsRequest {
   google.protobuf.Timestamp startDate = 1;
   google.protobuf.Timestamp endDate = 2;
-}
-
-message NewsReply {
-  Error error = 1;
-  repeated News news = 2;
-}
-
-message Error {
-  int32 code = 1;
-  string message = 2;
 }
 
 message News {

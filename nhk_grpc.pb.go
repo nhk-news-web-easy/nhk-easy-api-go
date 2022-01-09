@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NhkServiceClient interface {
-	GetNews(ctx context.Context, in *NewsRequest, opts ...grpc.CallOption) (*NewsReply, error)
+	GetNews(ctx context.Context, in *NewsRequest, opts ...grpc.CallOption) (NhkService_GetNewsClient, error)
 }
 
 type nhkServiceClient struct {
@@ -33,20 +33,43 @@ func NewNhkServiceClient(cc grpc.ClientConnInterface) NhkServiceClient {
 	return &nhkServiceClient{cc}
 }
 
-func (c *nhkServiceClient) GetNews(ctx context.Context, in *NewsRequest, opts ...grpc.CallOption) (*NewsReply, error) {
-	out := new(NewsReply)
-	err := c.cc.Invoke(ctx, "/nhk.NhkService/GetNews", in, out, opts...)
+func (c *nhkServiceClient) GetNews(ctx context.Context, in *NewsRequest, opts ...grpc.CallOption) (NhkService_GetNewsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NhkService_ServiceDesc.Streams[0], "/nhk.NhkService/GetNews", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &nhkServiceGetNewsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NhkService_GetNewsClient interface {
+	Recv() (*News, error)
+	grpc.ClientStream
+}
+
+type nhkServiceGetNewsClient struct {
+	grpc.ClientStream
+}
+
+func (x *nhkServiceGetNewsClient) Recv() (*News, error) {
+	m := new(News)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // NhkServiceServer is the server API for NhkService service.
 // All implementations must embed UnimplementedNhkServiceServer
 // for forward compatibility
 type NhkServiceServer interface {
-	GetNews(context.Context, *NewsRequest) (*NewsReply, error)
+	GetNews(*NewsRequest, NhkService_GetNewsServer) error
 	mustEmbedUnimplementedNhkServiceServer()
 }
 
@@ -54,8 +77,8 @@ type NhkServiceServer interface {
 type UnimplementedNhkServiceServer struct {
 }
 
-func (UnimplementedNhkServiceServer) GetNews(context.Context, *NewsRequest) (*NewsReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetNews not implemented")
+func (UnimplementedNhkServiceServer) GetNews(*NewsRequest, NhkService_GetNewsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetNews not implemented")
 }
 func (UnimplementedNhkServiceServer) mustEmbedUnimplementedNhkServiceServer() {}
 
@@ -70,22 +93,25 @@ func RegisterNhkServiceServer(s grpc.ServiceRegistrar, srv NhkServiceServer) {
 	s.RegisterService(&NhkService_ServiceDesc, srv)
 }
 
-func _NhkService_GetNews_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NewsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
+func _NhkService_GetNews_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NewsRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(NhkServiceServer).GetNews(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/nhk.NhkService/GetNews",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NhkServiceServer).GetNews(ctx, req.(*NewsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(NhkServiceServer).GetNews(m, &nhkServiceGetNewsServer{stream})
+}
+
+type NhkService_GetNewsServer interface {
+	Send(*News) error
+	grpc.ServerStream
+}
+
+type nhkServiceGetNewsServer struct {
+	grpc.ServerStream
+}
+
+func (x *nhkServiceGetNewsServer) Send(m *News) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 // NhkService_ServiceDesc is the grpc.ServiceDesc for NhkService service.
@@ -94,12 +120,13 @@ func _NhkService_GetNews_Handler(srv interface{}, ctx context.Context, dec func(
 var NhkService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "nhk.NhkService",
 	HandlerType: (*NhkServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
+	Methods:     []grpc.MethodDesc{},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "GetNews",
-			Handler:    _NhkService_GetNews_Handler,
+			StreamName:    "GetNews",
+			Handler:       _NhkService_GetNews_Handler,
+			ServerStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "nhk.proto",
 }
