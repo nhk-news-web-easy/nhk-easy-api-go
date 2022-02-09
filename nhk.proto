@@ -12,6 +12,12 @@ service NhkService {
       get: "/news"
     };
   }
+
+  rpc GetWords(WordRequest) returns (WordReply) {
+    option (google.api.http) = {
+      get: "/words"
+    };
+  }
 }
 
 message NewsRequest {
@@ -22,6 +28,15 @@ message NewsRequest {
 message NewsReply {
   Error error = 1;
   repeated News news = 2;
+}
+
+message WordRequest {
+  string newsId = 1;
+}
+
+message WordReply {
+  Error error = 1;
+  repeated Word words = 2;
 }
 
 message Error {
@@ -39,4 +54,15 @@ message News {
   string m3u8Url = 7;
   string imageUrl = 8;
   google.protobuf.Timestamp publishedAtUtc = 9;
+}
+
+message Word {
+  string idInNews = 1;
+  string name = 2;
+  repeated WordDefinition definitions = 3;
+}
+
+message WordDefinition {
+  string definition = 1;
+  string definitionWithRuby = 2;
 }

@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NhkServiceClient interface {
 	GetNews(ctx context.Context, in *NewsRequest, opts ...grpc.CallOption) (*NewsReply, error)
+	GetWords(ctx context.Context, in *WordRequest, opts ...grpc.CallOption) (*WordReply, error)
 }
 
 type nhkServiceClient struct {
@@ -42,11 +43,21 @@ func (c *nhkServiceClient) GetNews(ctx context.Context, in *NewsRequest, opts ..
 	return out, nil
 }
 
+func (c *nhkServiceClient) GetWords(ctx context.Context, in *WordRequest, opts ...grpc.CallOption) (*WordReply, error) {
+	out := new(WordReply)
+	err := c.cc.Invoke(ctx, "/nhk.NhkService/GetWords", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NhkServiceServer is the server API for NhkService service.
 // All implementations must embed UnimplementedNhkServiceServer
 // for forward compatibility
 type NhkServiceServer interface {
 	GetNews(context.Context, *NewsRequest) (*NewsReply, error)
+	GetWords(context.Context, *WordRequest) (*WordReply, error)
 	mustEmbedUnimplementedNhkServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedNhkServiceServer struct {
 
 func (UnimplementedNhkServiceServer) GetNews(context.Context, *NewsRequest) (*NewsReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNews not implemented")
+}
+func (UnimplementedNhkServiceServer) GetWords(context.Context, *WordRequest) (*WordReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWords not implemented")
 }
 func (UnimplementedNhkServiceServer) mustEmbedUnimplementedNhkServiceServer() {}
 
@@ -88,6 +102,24 @@ func _NhkService_GetNews_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NhkService_GetWords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NhkServiceServer).GetWords(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/nhk.NhkService/GetWords",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NhkServiceServer).GetWords(ctx, req.(*WordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NhkService_ServiceDesc is the grpc.ServiceDesc for NhkService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var NhkService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetNews",
 			Handler:    _NhkService_GetNews_Handler,
+		},
+		{
+			MethodName: "GetWords",
+			Handler:    _NhkService_GetWords_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
